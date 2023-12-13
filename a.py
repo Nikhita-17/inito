@@ -70,7 +70,7 @@ class InMemoryFileSystem:
             args = command[1:]
 
             if operation == 'exit':
-                print("Exiting the file system.")
+                print("Exiting file system.")
                 break
             elif hasattr(self, operation):
                 getattr(self, operation)(*args)
