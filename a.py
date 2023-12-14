@@ -28,7 +28,7 @@ class InMemoryFileSystem:
             else:
                 print(f"Error: Directory '{path}' not found.")
 
-
+   
     def touch(self, file_name):
         new_file_path = os.path.join(self.current_directory, file_name)
         if new_file_path in self.file_system:
@@ -53,6 +53,29 @@ class InMemoryFileSystem:
         else:
             print(f"Error: File '{file_name}' not found.")
 
+    def rm(self, target):
+        target_path = os.path.join(self.current_directory, target)
+
+        if target_path not in self.file_system:
+            print(f"Error: Target file/directory '{target}' not found.")
+        elif isinstance(self.file_system[target_path], dict) and self.file_system[target_path]:
+            # Directory is not empty
+            print(f"Error: Directory '{target}' is not empty. Remove its contents first.")
+        else:
+            self.file_system.pop(target_path)
+            print(f"Removed '{target}'.")
+
+    def cp(self, source, destination):
+        source_path = os.path.join(self.current_directory, source)
+        destination_path = os.path.join(self.current_directory, destination)
+
+        if source_path not in self.file_system:
+            print(f"Error: Source file '{source}' not found.")
+        elif destination_path in self.file_system and isinstance(self.file_system[destination_path], str):
+            print(f"Error: Destination '{destination}' is an existing file. Cannot copy.")
+        else:
+            self.file_system[destination_path] = self.file_system[source_path]
+            print(f"File '{source}' copied to '{destination}'.")
 
     def cat(self, file_name):
         file_path = os.path.join(self.current_directory, file_name)
@@ -70,7 +93,7 @@ class InMemoryFileSystem:
             args = command[1:]
 
             if operation == 'exit':
-                print("Exiting file system.")
+                print("Exiting the file system.")
                 break
             elif hasattr(self, operation):
                 getattr(self, operation)(*args)
@@ -81,3 +104,6 @@ class InMemoryFileSystem:
 if __name__ == "__main__":
     file_system = InMemoryFileSystem()
     file_system.run()
+
+
+    
